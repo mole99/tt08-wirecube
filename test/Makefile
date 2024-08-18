@@ -5,7 +5,13 @@
 SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
-PROJECT_SOURCES = project.v
+PROJECT_SOURCES =   types.sv \
+                    tt_um_tt08_wirecube.sv \
+                    wirecube_top.sv \
+                    edge_function.sv \
+                    timing.sv \
+                    delay.sv \
+                    line_rom.sv
 
 ifneq ($(GATES),yes)
 
