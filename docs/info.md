@@ -9,12 +9,12 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-Explain how your project works
+I will update the documentation after the competition.
 
 ## How to test
 
-Explain how to use your project
+Connect the Tiny VGA to the output Pmod port, set the clock frequency to two times 25.175 MHz = 50.350 MHz and enjoy the show.
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+- [Tiny VGA Pmod](https://github.com/mole99/tiny-vga)
