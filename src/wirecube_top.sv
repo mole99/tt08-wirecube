@@ -14,7 +14,7 @@ module wirecube_top (
     output logic       next_vertical_o,
     output logic       next_frame_o
 );
-    localparam PIPELINE_LATENCY = 3;
+    localparam PIPELINE_LATENCY = 2;
     
     localparam COLOR_BLACK = 6'h00;
     localparam COLOR_DARK_GRAY = 6'h15;

@@ -14,7 +14,7 @@ module edge_function (
     output logic                          pixel_set_o
 );
     
-    localparam PIPELINE_LATENCY = 3;
+    localparam PIPELINE_LATENCY = 2;
     
     // Calculate the edge function for the current pixel position and the line
     // E(P) = (P.x - V0.x) * (V1.y - V0.y) - (P.y - V0.y) * (V1.x - V0.x)
@@ -46,63 +46,53 @@ module edge_function (
     logic left_or_right; // 0 = left, 1 = right
     assign left_or_right = ordered_line.x1 >= ordered_line.x0;
     
-    // Stroe the visibility until the very end
+    // Store the visibility until the very end
     logic visible;
     
-    always_ff @(posedge clk_i, negedge rst_ni) begin
-        if (!rst_ni) begin
-            term0 <= '0;
-            term1 <= '0;
-            term2 <= '0;
-            term3 <= '0;
-            
-            visible <= 1'b0;
+    always_ff @(posedge clk_i) begin
+        // Left side
+        if (left_or_right == 1'b0) begin
+            term0 <= ordered_line.x0 - pixel_x_i;
+            term1 <= ordered_line.y1 - pixel_y_i;
+            term2 <= pixel_x_i - ordered_line.x1;
+            term3 <= pixel_y_i - ordered_line.y0;
+        
+            visible <= !(pixel_y_i > ordered_line.y1 || pixel_y_i < ordered_line.y0 || pixel_x_i < ordered_line.x1 || pixel_x_i > ordered_line.x0);
+        
+        // Right side
         end else begin
-            // Left side
-            if (left_or_right == 1'b0) begin
-                term0 <= ordered_line.x0 - pixel_x_i;
-                term1 <= ordered_line.y1 - pixel_y_i;
-                term2 <= pixel_x_i - ordered_line.x1;
-                term3 <= pixel_y_i - ordered_line.y0;
-            
-                visible <= !(pixel_y_i > ordered_line.y1 || pixel_y_i < ordered_line.y0 || pixel_x_i < ordered_line.x1 || pixel_x_i > ordered_line.x0);
-            
-            // Right side
-            end else begin
-                term0 <= pixel_x_i - ordered_line.x0;
-                term1 <= ordered_line.y1 - pixel_y_i;
-                term2 <= ordered_line.x1 - pixel_x_i;
-                term3 <= pixel_y_i - ordered_line.y0;
-            
-                visible <= !(pixel_y_i > ordered_line.y1 || pixel_y_i < ordered_line.y0 || pixel_x_i > ordered_line.x1 || pixel_x_i < ordered_line.x0);
-            end
+            term0 <= pixel_x_i - ordered_line.x0;
+            term1 <= ordered_line.y1 - pixel_y_i;
+            term2 <= ordered_line.x1 - pixel_x_i;
+            term3 <= pixel_y_i - ordered_line.y0;
+        
+            visible <= !(pixel_y_i > ordered_line.y1 || pixel_y_i < ordered_line.y0 || pixel_x_i > ordered_line.x1 || pixel_x_i < ordered_line.x0);
         end
     end
     
-    // Step 2: Multiplication
+    // Step 2: Multiplication + Subtraction
     logic [types::LINE_BITS*2-1:0] mul1, mul2;
     
     logic visible_2;
     
-    always_ff @(posedge clk_i, negedge rst_ni) begin
-        if (!rst_ni) begin
-            mul1 <= '0;
-            mul2 <= '0;
-            
-            visible_2 <= 1'b0;
+    assign mul1 = term0 * term1;
+    assign mul2 = term2 * term3;
+    
+    always_ff @(posedge clk_i) begin
+        // Get the absolute difference, sign does not matter
+        if (mul1 > mul2) begin
+            absolute <= mul1 - mul2;
         end else begin
-
-            mul1 <= term0 * term1;
-            mul2 <= term2 * term3;
-            
-            visible_2 <= visible;
+            absolute <= mul2 - mul1;
         end
+        
+        visible_2 <= visible;
     end
     
     // Step 3: Subtraction
     
     logic [types::LINE_BITS*2-1:0] absolute;
-    logic visible_3;
+    /*logic visible_3;
     
     always_ff @(posedge clk_i, negedge rst_ni) begin
         if (!rst_ni) begin
@@ -119,10 +109,10 @@ module edge_function (
             
             visible_3 <= visible_2;
         end
-    end
+    end*/
     
     // Step 4: Is the pixel visible and inside the threshold?
     
-    assign pixel_set_o = visible_3 && absolute < my_thresh;
+    assign pixel_set_o = visible_2 && absolute < my_thresh; // TODO
 
 endmodule
