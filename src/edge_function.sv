@@ -30,10 +30,10 @@ module edge_function (
     always_comb begin
         // Swap points
         if (swap_points) begin
-            ordered_line <= {my_line.x1, my_line.y1, my_line.x0, my_line.y0};
+            ordered_line = {my_line.x1, my_line.y1, my_line.x0, my_line.y0};
         // Already ordered
         end else begin
-            ordered_line <= my_line;
+            ordered_line = my_line;
         end
     end
     
