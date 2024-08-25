@@ -22,7 +22,7 @@ jobs:
           sh autoconf.sh
           ./configure
           make -j$(nproc)
-          make install
+          sudo make install
           iverilog -v
 
       # Set Python up and install cocotb
