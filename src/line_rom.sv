@@ -10,78 +10,6 @@ module line_rom (
     output types::line_t      my_line,
     output logic [types::THRESH_BITS-1:0] my_thresh
 );
-    // Line
-    always_comb begin
-        case (line_i)
-            4'd0: my_line = {point_0_x[frame_i], point_0_y[frame_i], point_1_x[frame_i], point_1_y[frame_i]};
-            4'd1: my_line = {point_1_x[frame_i], point_1_y[frame_i], point_3_x[frame_i], point_3_y[frame_i]};
-            4'd2: my_line = {point_3_x[frame_i], point_3_y[frame_i], point_2_x[frame_i], point_2_y[frame_i]};
-            4'd3: my_line = {point_2_x[frame_i], point_2_y[frame_i], point_0_x[frame_i], point_0_y[frame_i]};
-            4'd4: my_line = {point_0_x[frame_i], point_0_y[frame_i], point_4_x[frame_i], point_4_y[frame_i]};
-            4'd5: my_line = {point_1_x[frame_i], point_1_y[frame_i], point_5_x[frame_i], point_5_y[frame_i]};
-            4'd6: my_line = {point_2_x[frame_i], point_2_y[frame_i], point_6_x[frame_i], point_6_y[frame_i]};
-            4'd7: my_line = {point_3_x[frame_i], point_3_y[frame_i], point_7_x[frame_i], point_7_y[frame_i]};
-            4'd8: my_line = {point_4_x[frame_i], point_4_y[frame_i], point_5_x[frame_i], point_5_y[frame_i]};
-            4'd9: my_line = {point_5_x[frame_i], point_5_y[frame_i], point_7_x[frame_i], point_7_y[frame_i]};
-            4'd10: my_line = {point_7_x[frame_i], point_7_y[frame_i], point_6_x[frame_i], point_6_y[frame_i]};
-            4'd11: my_line = {point_6_x[frame_i], point_6_y[frame_i], point_4_x[frame_i], point_4_y[frame_i]};
-            default: my_line = 'x;
-        endcase
-    end
-    
-    // Threshold must be shifted because of the 
-    // pipeline latency in the edge_function
-    always_comb begin
-        case (line_i)
-            4'd0: my_thresh = threshold_10[frame_i];
-            4'd1: my_thresh = threshold_11[frame_i];
-            4'd2: my_thresh = threshold_0[frame_i];
-            4'd3: my_thresh = threshold_1[frame_i];
-            4'd4: my_thresh = threshold_2[frame_i];
-            4'd5: my_thresh = threshold_3[frame_i];
-            4'd6: my_thresh = threshold_4[frame_i];
-            4'd7: my_thresh = threshold_5[frame_i];
-            4'd8: my_thresh = threshold_6[frame_i];
-            4'd9: my_thresh = threshold_7[frame_i];
-            4'd10: my_thresh = threshold_8[frame_i];
-            4'd11: my_thresh = threshold_9[frame_i];
-            default: my_thresh = 'x;
-        endcase
-    end
-    /*always_comb begin
-        case (line_i)
-            4'd0: my_thresh = threshold_9[frame_i];
-            4'd1: my_thresh = threshold_10[frame_i];
-            4'd2: my_thresh = threshold_11[frame_i];
-            4'd3: my_thresh = threshold_0[frame_i];
-            4'd4: my_thresh = threshold_1[frame_i];
-            4'd5: my_thresh = threshold_2[frame_i];
-            4'd6: my_thresh = threshold_3[frame_i];
-            4'd7: my_thresh = threshold_4[frame_i];
-            4'd8: my_thresh = threshold_5[frame_i];
-            4'd9: my_thresh = threshold_6[frame_i];
-            4'd10: my_thresh = threshold_7[frame_i];
-            4'd11: my_thresh = threshold_8[frame_i];
-            default: my_thresh = 'x;
-        endcase
-    end*/
-    /*always_comb begin
-        case (line_i)
-            4'd0: my_thresh = threshold_8[frame_i];
-            4'd1: my_thresh = threshold_9[frame_i];
-            4'd2: my_thresh = threshold_10[frame_i];
-            4'd3: my_thresh = threshold_11[frame_i];
-            4'd4: my_thresh = threshold_0[frame_i];
-            4'd5: my_thresh = threshold_1[frame_i];
-            4'd6: my_thresh = threshold_2[frame_i];
-            4'd7: my_thresh = threshold_3[frame_i];
-            4'd8: my_thresh = threshold_4[frame_i];
-            4'd9: my_thresh = threshold_5[frame_i];
-            4'd10: my_thresh = threshold_6[frame_i];
-            4'd11: my_thresh = threshold_7[frame_i];
-            default: my_thresh = 'x;
-        endcase
-    end*/
     
 logic [types::LINE_BITS-1:0] point_0_x [32];
 logic [types::LINE_BITS-1:0] point_0_y [32];
@@ -1007,5 +935,78 @@ assign threshold_11[28] = 8'd45;
 assign threshold_11[29] = 8'd44;
 assign threshold_11[30] = 8'd42;
 assign threshold_11[31] = 8'd42;
+
+// Line
+    always_comb begin
+        case (line_i)
+            4'd0: my_line = {point_0_x[frame_i], point_0_y[frame_i], point_1_x[frame_i], point_1_y[frame_i]};
+            4'd1: my_line = {point_1_x[frame_i], point_1_y[frame_i], point_3_x[frame_i], point_3_y[frame_i]};
+            4'd2: my_line = {point_3_x[frame_i], point_3_y[frame_i], point_2_x[frame_i], point_2_y[frame_i]};
+            4'd3: my_line = {point_2_x[frame_i], point_2_y[frame_i], point_0_x[frame_i], point_0_y[frame_i]};
+            4'd4: my_line = {point_0_x[frame_i], point_0_y[frame_i], point_4_x[frame_i], point_4_y[frame_i]};
+            4'd5: my_line = {point_1_x[frame_i], point_1_y[frame_i], point_5_x[frame_i], point_5_y[frame_i]};
+            4'd6: my_line = {point_2_x[frame_i], point_2_y[frame_i], point_6_x[frame_i], point_6_y[frame_i]};
+            4'd7: my_line = {point_3_x[frame_i], point_3_y[frame_i], point_7_x[frame_i], point_7_y[frame_i]};
+            4'd8: my_line = {point_4_x[frame_i], point_4_y[frame_i], point_5_x[frame_i], point_5_y[frame_i]};
+            4'd9: my_line = {point_5_x[frame_i], point_5_y[frame_i], point_7_x[frame_i], point_7_y[frame_i]};
+            4'd10: my_line = {point_7_x[frame_i], point_7_y[frame_i], point_6_x[frame_i], point_6_y[frame_i]};
+            4'd11: my_line = {point_6_x[frame_i], point_6_y[frame_i], point_4_x[frame_i], point_4_y[frame_i]};
+            default: my_line = 'x;
+        endcase
+    end
+    
+    // Threshold must be shifted because of the 
+    // pipeline latency in the edge_function
+    always_comb begin
+        case (line_i)
+            4'd0: my_thresh = threshold_10[frame_i];
+            4'd1: my_thresh = threshold_11[frame_i];
+            4'd2: my_thresh = threshold_0[frame_i];
+            4'd3: my_thresh = threshold_1[frame_i];
+            4'd4: my_thresh = threshold_2[frame_i];
+            4'd5: my_thresh = threshold_3[frame_i];
+            4'd6: my_thresh = threshold_4[frame_i];
+            4'd7: my_thresh = threshold_5[frame_i];
+            4'd8: my_thresh = threshold_6[frame_i];
+            4'd9: my_thresh = threshold_7[frame_i];
+            4'd10: my_thresh = threshold_8[frame_i];
+            4'd11: my_thresh = threshold_9[frame_i];
+            default: my_thresh = 'x;
+        endcase
+    end
+    /*always_comb begin
+        case (line_i)
+            4'd0: my_thresh = threshold_9[frame_i];
+            4'd1: my_thresh = threshold_10[frame_i];
+            4'd2: my_thresh = threshold_11[frame_i];
+            4'd3: my_thresh = threshold_0[frame_i];
+            4'd4: my_thresh = threshold_1[frame_i];
+            4'd5: my_thresh = threshold_2[frame_i];
+            4'd6: my_thresh = threshold_3[frame_i];
+            4'd7: my_thresh = threshold_4[frame_i];
+            4'd8: my_thresh = threshold_5[frame_i];
+            4'd9: my_thresh = threshold_6[frame_i];
+            4'd10: my_thresh = threshold_7[frame_i];
+            4'd11: my_thresh = threshold_8[frame_i];
+            default: my_thresh = 'x;
+        endcase
+    end*/
+    /*always_comb begin
+        case (line_i)
+            4'd0: my_thresh = threshold_8[frame_i];
+            4'd1: my_thresh = threshold_9[frame_i];
+            4'd2: my_thresh = threshold_10[frame_i];
+            4'd3: my_thresh = threshold_11[frame_i];
+            4'd4: my_thresh = threshold_0[frame_i];
+            4'd5: my_thresh = threshold_1[frame_i];
+            4'd6: my_thresh = threshold_2[frame_i];
+            4'd7: my_thresh = threshold_3[frame_i];
+            4'd8: my_thresh = threshold_4[frame_i];
+            4'd9: my_thresh = threshold_5[frame_i];
+            4'd10: my_thresh = threshold_6[frame_i];
+            4'd11: my_thresh = threshold_7[frame_i];
+            default: my_thresh = 'x;
+        endcase
+    end*/
 
 endmodule

@@ -7,11 +7,11 @@
 module tb ();
 
   // Dump the signals to a VCD file. You can view it with gtkwave.
-  initial begin
+  /*initial begin
     $dumpfile("tb.vcd");
     $dumpvars(0, tb);
     #1;
-  end
+  end*/
 
   // Wire up the inputs and outputs:
   reg clk;
@@ -41,5 +41,18 @@ module tb ();
       .clk    (clk),      // clock
       .rst_n  (rst_n)     // not reset
   );
+  
+    wire [5:0] rrggbb;
+    wire hsync;
+    wire vsync;
+
+    // Output PMOD - Tiny VGA
+
+    assign rrggbb[5:4] = {uo_out[0], uo_out[4]};
+    assign rrggbb[3:2] = {uo_out[1], uo_out[5]};
+    assign rrggbb[1:0] = {uo_out[2], uo_out[6]};
+
+    assign vsync = uo_out[3];
+    assign hsync = uo_out[7];
 
 endmodule

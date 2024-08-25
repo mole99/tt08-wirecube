@@ -47,7 +47,11 @@ module edge_function (
     assign left_or_right = ordered_line.x1 >= ordered_line.x0;
     
     // Store the visibility until the very end
-    logic visible;
+    logic visible, not_visible_y, not_visible_x;
+    
+    assign not_visible_y = pixel_y_i > ordered_line.y1 || pixel_y_i <ordered_line.y0;
+    assign not_visible_x = left_or_right ? pixel_x_i > ordered_line.x1 || pixel_x_i < ordered_line.x0
+                                       : pixel_x_i < ordered_line.x1 || pixel_x_i > ordered_line.x0;
     
     always_ff @(posedge clk_i) begin
         // Left side
@@ -57,21 +61,21 @@ module edge_function (
             term2 <= pixel_x_i - ordered_line.x1;
             term3 <= pixel_y_i - ordered_line.y0;
         
-            visible <= !(pixel_y_i > ordered_line.y1 || pixel_y_i < ordered_line.y0 || pixel_x_i < ordered_line.x1 || pixel_x_i > ordered_line.x0);
-        
         // Right side
         end else begin
             term0 <= pixel_x_i - ordered_line.x0;
             term1 <= ordered_line.y1 - pixel_y_i;
             term2 <= ordered_line.x1 - pixel_x_i;
             term3 <= pixel_y_i - ordered_line.y0;
-        
-            visible <= !(pixel_y_i > ordered_line.y1 || pixel_y_i < ordered_line.y0 || pixel_x_i > ordered_line.x1 || pixel_x_i < ordered_line.x0);
+
         end
+        
+        visible <= !(not_visible_y || not_visible_x);
     end
     
     // Step 2: Multiplication + Subtraction
     logic [types::LINE_BITS*2-1:0] mul1, mul2;
+    logic [types::LINE_BITS*2-1:0] absolute;
     
     logic visible_2;
     
@@ -91,7 +95,6 @@ module edge_function (
     
     // Step 3: Subtraction
     
-    logic [types::LINE_BITS*2-1:0] absolute;
     /*logic visible_3;
     
     always_ff @(posedge clk_i, negedge rst_ni) begin

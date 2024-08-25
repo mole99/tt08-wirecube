@@ -32,32 +32,31 @@ package types;
         trick: let attributes depend on subcounter_h[0] -> different attributes for small/large
     */
     
-    typedef enum bit[1:0] {
-        BG_COLOR0,
+    typedef enum logic[1:0] {
+        BG_UNDEFINED='x,
+        BG_COLOR0=0,
         BG_COLOR1,
         BG_STRIPES,
         BG_SPECIAL
     } fill_type_t;
     
-    typedef enum bit[1:0] {
-        AS_SLOW,
+    typedef enum logic[1:0] {
+        AS_UNDEFINED='x,
+        AS_SLOW=0,
         AS_NORM,
         AS_FAST,
         AS_STOP
     } animation_speed_t;
     
-    typedef enum bit[0:0] {
-        A_ROTATE,
+    typedef enum logic[0:0] {
+        A_UNDEFINED='x,
+        A_ROTATE=0,
         A_BOUNCE
     } animation_t;
 
-    typedef enum bit[0:0] {
-        A_NORMAL,
-        A_THICK
-    } thickness_t;
-
-    typedef enum bit[0:0] {
-        S_NORMAL,
+    typedef enum logic[0:0] {
+        S_UNDEFINED='x,
+        S_NORMAL=0,
         S_SMALL
     } size_t;
 

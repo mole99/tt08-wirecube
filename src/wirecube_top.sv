@@ -148,8 +148,8 @@ module wirecube_top (
     
     always_ff @(posedge clk_i, negedge rst_ni) begin
         if (!rst_ni) begin
-            subcounter_h <= '0;
-            subcounter_v <= '0;
+            subcounter_h <= 'x;
+            subcounter_v <= 'x;
         end else begin
         
             if (counter_h == -PIPELINE_LATENCY-NUM_LINES-1) begin
@@ -179,8 +179,8 @@ module wirecube_top (
     
     always_ff @(posedge clk_i, negedge rst_ni) begin
         if (!rst_ni) begin
-            pixel_x <= '0;
-            pixel_y <= '0;
+            pixel_x <= 'x;
+            pixel_y <= 'x;
         end else begin
             if (subcounter_h == NUM_LINES-1) begin
                 pixel_x <= pixel_x + 1;
@@ -201,6 +201,14 @@ module wirecube_top (
         end
     end
 
+
+    // TODO attributes
+    types::fill_type_t background_fill;
+    types::fill_type_t cube_fill;
+    types::animation_speed_t animation_speed;
+    types::animation_t animation;
+    types::size_t size;
+
     logic pixel_set;
     
     types::line_t my_line;
@@ -214,6 +222,7 @@ module wirecube_top (
             types::AS_NORM: cur_frame = frame_cnt[6:1];
             types::AS_FAST: cur_frame = frame_cnt[5:0];
             types::AS_STOP: cur_frame = 0;
+            default:        cur_frame = 'x;
         endcase
     end
     
@@ -261,9 +270,9 @@ module wirecube_top (
     
     always_ff @(posedge clk_i, negedge rst_ni) begin
         if (!rst_ni) begin
-            any_line_set <= 1'b0;
-            final_pixel <= 1'b0;
-            linecounter_h <= '0;
+            any_line_set <= 1'bx;
+            final_pixel <= 1'bx;
+            linecounter_h <= 'x;
         end else begin
         
             if (counter_h == -NUM_LINES-1) begin
@@ -285,13 +294,6 @@ module wirecube_top (
             end
         end
     end
-    
-    types::fill_type_t background_fill;
-    types::fill_type_t cube_fill;
-    types::animation_speed_t animation_speed;
-    types::animation_t animation;
-    types::thickness_t thickness;
-    types::size_t size;
 
     // Capture output color
     logic [5:0] rgb_d;
@@ -302,14 +304,26 @@ module wirecube_top (
     assign cur_state_cube = frame_cnt[11:8];
     assign cur_state_background = frame_cnt[11:8];
     
+    types::size_t size_small_normal;
+    
+    always_comb begin
+        if (frame_cnt[0] ^ counter_v[0]) begin
+            size_small_normal = types::S_SMALL;
+        end else begin
+            size_small_normal = types::S_NORMAL;
+        end
+    end
+    
+    //assign size_small_normal = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
+    
     // Size
     // ~1min -> 1 step ~1s
     always_comb begin
         case (frame_cnt[11:6])
-            'd0:  size = 'x;
-            'd1:  size = 'x;
-            'd2:  size = 'x;
-            'd3:  size = 'x;
+            'd0:  size = types::S_NORMAL;
+            'd1:  size = types::S_UNDEFINED;
+            'd2:  size = types::S_UNDEFINED;
+            'd3:  size = types::S_UNDEFINED;
             'd4:  size = types::S_NORMAL;
             'd5:  size = types::S_NORMAL;
             'd6:  size = types::S_NORMAL;
@@ -334,10 +348,10 @@ module wirecube_top (
             'd25: size = types::S_NORMAL;
             'd26: size = types::S_NORMAL;
             'd27: size = types::S_NORMAL;
-            'd28: size = 'x;
-            'd29: size = 'x;
-            'd30: size = 'x;
-            'd31: size = 'x;
+            'd28: size = types::S_UNDEFINED;
+            'd29: size = types::S_UNDEFINED;
+            'd30: size = types::S_UNDEFINED;
+            'd31: size = types::S_UNDEFINED;
             'd32: size = types::S_SMALL;
             'd33: size = types::S_SMALL;
             'd34: size = types::S_SMALL;
@@ -346,41 +360,74 @@ module wirecube_top (
             'd37: size = types::S_SMALL;
             'd38: size = types::S_SMALL;
             'd39: size = types::S_SMALL;
-            'd40: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd41: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd42: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd43: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd44: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd45: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd46: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd47: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd48: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd49: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd50: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd51: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd52: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd53: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd54: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd55: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd56: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd57: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd58: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd59: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd60: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd61: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd62: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-            'd63: size = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
+            'd40: size = size_small_normal;
+            'd41: size = size_small_normal;
+            'd42: size = size_small_normal;
+            'd43: size = size_small_normal;
+            'd44: size = size_small_normal;
+            'd45: size = size_small_normal;
+            'd46: size = size_small_normal;
+            'd47: size = size_small_normal;
+            'd48: size = size_small_normal;
+            'd49: size = size_small_normal;
+            'd50: size = size_small_normal;
+            'd51: size = size_small_normal;
+            'd52: size = size_small_normal;
+            'd53: size = size_small_normal;
+            'd54: size = size_small_normal;
+            'd55: size = size_small_normal;
+            'd56: size = size_small_normal;
+            'd57: size = size_small_normal;
+            'd58: size = size_small_normal;
+            'd59: size = size_small_normal;
+            'd60: size = size_small_normal;
+            'd61: size = size_small_normal;
+            'd62: size = size_small_normal;
+            'd63: size = size_small_normal;
+            default: size = types::S_UNDEFINED;
         endcase
+    end
+
+    types::animation_speed_t as_norm_stop;
+    types::animation_speed_t as_fast_stop;
+    types::animation_speed_t as_fast_slow;
+    
+    //assign as_norm_stop = frame_cnt[0] ^ counter_v[0] ? types::AS_NORM : types::AS_STOP;
+    //assign as_fast_stop = frame_cnt[0] ^ counter_v[0] ? types::AS_FAST : types::AS_STOP;
+    //assign as_fast_slow = frame_cnt[0] ^ counter_v[0] ? types::AS_FAST : types::AS_SLOW;
+
+    always_comb begin
+        if (frame_cnt[0] ^ counter_v[0]) begin
+            as_norm_stop = types::AS_NORM;
+        end else begin
+            as_norm_stop = types::AS_STOP;
+        end
+    end
+    
+    always_comb begin
+        if (frame_cnt[0] ^ counter_v[0]) begin
+            as_fast_stop = types::AS_FAST;
+        end else begin
+            as_fast_stop = types::AS_STOP;
+        end
+    end
+    
+    always_comb begin
+        if (frame_cnt[0] ^ counter_v[0]) begin
+            as_fast_slow = types::AS_FAST;
+        end else begin
+            as_fast_slow = types::AS_SLOW;
+        end
     end
 
     // animation speed
     // ~1min -> 1 step ~1s
     always_comb begin
         case (frame_cnt[11:6])
-            'd0:  animation_speed = 'x;
-            'd1:  animation_speed = 'x;
-            'd2:  animation_speed = 'x;
-            'd3:  animation_speed = 'x;
+            'd0:  animation_speed = types::AS_STOP;
+            'd1:  animation_speed = types::AS_UNDEFINED;
+            'd2:  animation_speed = types::AS_UNDEFINED;
+            'd3:  animation_speed = types::AS_UNDEFINED;
             'd4:  animation_speed = types::AS_STOP;
             'd5:  animation_speed = types::AS_STOP;
             'd6:  animation_speed = types::AS_STOP;
@@ -405,10 +452,10 @@ module wirecube_top (
             'd25: animation_speed = types::AS_SLOW;
             'd26: animation_speed = types::AS_SLOW;
             'd27: animation_speed = types::AS_SLOW;
-            'd28: animation_speed = 'x;
-            'd29: animation_speed = 'x;
-            'd30: animation_speed = 'x;
-            'd31: animation_speed = 'x;
+            'd28: animation_speed = types::AS_UNDEFINED;
+            'd29: animation_speed = types::AS_UNDEFINED;
+            'd30: animation_speed = types::AS_UNDEFINED;
+            'd31: animation_speed = types::AS_UNDEFINED;
             'd32: animation_speed = types::AS_STOP;
             'd33: animation_speed = types::AS_STOP;
             'd34: animation_speed = types::AS_STOP;
@@ -417,18 +464,18 @@ module wirecube_top (
             'd37: animation_speed = types::AS_SLOW;
             'd38: animation_speed = types::AS_SLOW;
             'd39: animation_speed = types::AS_SLOW;
-            'd40: animation_speed = frame_cnt[0] ^ counter_v[0] ? types::AS_NORM : types::AS_STOP;
-            'd41: animation_speed = frame_cnt[0] ^ counter_v[0] ? types::AS_NORM : types::AS_STOP;
-            'd42: animation_speed = frame_cnt[0] ^ counter_v[0] ? types::AS_NORM : types::AS_STOP;
-            'd43: animation_speed = frame_cnt[0] ^ counter_v[0] ? types::AS_NORM : types::AS_STOP;
-            'd44: animation_speed = frame_cnt[0] ^ counter_v[0] ? types::AS_FAST : types::AS_STOP;
-            'd45: animation_speed = frame_cnt[0] ^ counter_v[0] ? types::AS_FAST : types::AS_STOP;
-            'd46: animation_speed = frame_cnt[0] ^ counter_v[0] ? types::AS_FAST : types::AS_STOP;
-            'd47: animation_speed = frame_cnt[0] ^ counter_v[0] ? types::AS_FAST : types::AS_STOP;
-            'd48: animation_speed = frame_cnt[0] ^ counter_v[0] ? types::AS_FAST : types::AS_SLOW;
-            'd49: animation_speed = frame_cnt[0] ^ counter_v[0] ? types::AS_FAST : types::AS_SLOW;
-            'd50: animation_speed = frame_cnt[0] ^ counter_v[0] ? types::AS_FAST : types::AS_SLOW;
-            'd51: animation_speed = frame_cnt[0] ^ counter_v[0] ? types::AS_FAST : types::AS_SLOW;
+            'd40: animation_speed = as_norm_stop;
+            'd41: animation_speed = as_norm_stop;
+            'd42: animation_speed = as_norm_stop;
+            'd43: animation_speed = as_norm_stop;
+            'd44: animation_speed = as_fast_stop;
+            'd45: animation_speed = as_fast_stop;
+            'd46: animation_speed = as_fast_stop;
+            'd47: animation_speed = as_fast_stop;
+            'd48: animation_speed = as_fast_slow;
+            'd49: animation_speed = as_fast_slow;
+            'd50: animation_speed = as_fast_slow;
+            'd51: animation_speed = as_fast_slow;
             'd52: animation_speed = types::AS_NORM;
             'd53: animation_speed = types::AS_NORM;
             'd54: animation_speed = types::AS_NORM;
@@ -441,6 +488,7 @@ module wirecube_top (
             'd61: animation_speed = types::AS_NORM;
             'd62: animation_speed = types::AS_NORM;
             'd63: animation_speed = types::AS_NORM;
+            default: animation_speed = types::AS_UNDEFINED;
         endcase
     end
     
@@ -459,6 +507,7 @@ module wirecube_top (
             2'd1: color_rainbow = COLOR_2;
             2'd2: color_rainbow = COLOR_3;
             2'd3: color_rainbow = COLOR_4;
+            default: color_rainbow = 'x;
         endcase
     end
     
@@ -470,6 +519,7 @@ module wirecube_top (
             types::BG_COLOR1:   background_color = color1;
             types::BG_STRIPES:  background_color = color_rainbow;
             types::BG_SPECIAL:  background_color = color_xor;
+            default: background_color = 'x;
         endcase
     end
     
@@ -479,6 +529,7 @@ module wirecube_top (
             types::BG_COLOR1:   cube_color = color1;
             types::BG_STRIPES:  cube_color = frame_cnt[5:0];
             types::BG_SPECIAL:  cube_color = color_xor;//frame_cnt[5:0];
+            default: cube_color = 'x;
         endcase
     end
 
@@ -489,7 +540,7 @@ module wirecube_top (
     // ~1min -> 1 step ~1s
     always_comb begin
         case (frame_cnt[11:6])
-            'd0:  begin background_fill = types::BG_COLOR0; cube_fill = types::BG_COLOR0; end
+            'd0:  begin background_fill = types::BG_COLOR1; cube_fill = types::BG_COLOR0; end
             'd1:  begin background_fill = types::BG_COLOR0; cube_fill = types::BG_COLOR0; end
             'd2:  begin background_fill = types::BG_COLOR0; cube_fill = types::BG_COLOR0; end
             'd3:  begin background_fill = types::BG_COLOR0; cube_fill = types::BG_COLOR0; end // --- show cube
@@ -553,12 +604,13 @@ module wirecube_top (
             'd61: begin background_fill = types::BG_COLOR0; cube_fill = types::BG_SPECIAL; end
             'd62: begin background_fill = types::BG_COLOR0; cube_fill = types::BG_STRIPES; end
             'd63: begin background_fill = types::BG_COLOR0; cube_fill = types::BG_STRIPES; end // --- end
+            default: begin background_fill = types::BG_UNDEFINED; cube_fill = types::BG_UNDEFINED; end
         endcase
     end
 
     always_ff @(posedge clk_i, negedge rst_ni) begin
         if (!rst_ni) begin
-            rgb_d <= '0;
+            rgb_d <= 'x;
         end else begin
             rgb_d <= final_pixel ? cube_color : background_color;
             
