@@ -23,7 +23,6 @@ jobs:
           ./configure
           make -j$(nproc)
           sudo make install
-          iverilog -v
 
       # Set Python up and install cocotb
       - name: Setup python
