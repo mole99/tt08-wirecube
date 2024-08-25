@@ -20,7 +20,8 @@ jobs:
           git clone https://github.com/steveicarus/iverilog.git
           cd iverilog
           sh autoconf.sh
-          make
+          ./configure
+          make -j$(nproc)
           make install
           iverilog -v
 
