@@ -53,13 +53,13 @@ async def draw_frame(dut):
     
 
         # Expand color data
-        r = int(dut.rrggbb.value[1:0]) << 6
+        r = int(dut.rrggbb.value[0:1]) << 6
         if (r & 1<<6):
             r = r | 0x3F
-        g = int(dut.rrggbb.value[3:2]) << 6
+        g = int(dut.rrggbb.value[2:3]) << 6
         if (g & 1<<6):
             g = g | 0x3F
-        b = int(dut.rrggbb.value[5:4]) << 6
+        b = int(dut.rrggbb.value[4:5]) << 6
         if (b & 1<<6):
             b = b | 0x3F
 
