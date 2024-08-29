@@ -28,14 +28,14 @@ project:
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 pinout:
   # Inputs
-  ui[0]: ""
-  ui[1]: ""
-  ui[2]: ""
-  ui[3]: ""
-  ui[4]: ""
-  ui[5]: ""
-  ui[6]: ""
-  ui[7]: ""
+  ui[0]: "toggle background bit 0"
+  ui[1]: "toggle background bit 1"
+  ui[2]: "toggle background bit 2"
+  ui[3]: "toggle cube bit 0"
+  ui[4]: "toggle cube bit 1"
+  ui[5]: "toggle cube bit 2"
+  ui[6]: "toggle speed bit 0"
+  ui[7]: "toggle speed bit 1"
 
   # Outputs
   uo[0]: "R1"

@@ -9,11 +9,11 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-I will update the documentation after the competition.
+The documentation will be updated after the competition has concluded.
 
 ## How to test
 
-Connect the Tiny VGA to the output Pmod port, set the clock frequency to two times 25.175 MHz = 50.350 MHz and enjoy the show.
+Connect a Tiny VGA to the output Pmod port, set the clock frequency to two times 25.175 MHz = 50.350 MHz, make sure `ui_in` is set to `0x00` and enjoy the show!
 
 ## External hardware
 

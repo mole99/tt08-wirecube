@@ -11,7 +11,8 @@ module edge_function (
 
     input  logic [types::LINE_BITS-1:0]   pixel_x_i,
     input  logic [types::LINE_BITS-1:0]   pixel_y_i,
-    output logic                          pixel_set_o
+    output logic                          pixel_set_o,
+    output logic                          pixel_set2_o
 );
     
     localparam PIPELINE_LATENCY = 2;
@@ -116,6 +117,8 @@ module edge_function (
     
     // Step 4: Is the pixel visible and inside the threshold?
     
-    assign pixel_set_o = visible_2 && absolute < my_thresh; // TODO
+    assign pixel_set_o = visible_2 && absolute < my_thresh;
+    // Thicker line
+    assign pixel_set2_o = visible_2 && absolute < (my_thresh*2);
 
 endmodule

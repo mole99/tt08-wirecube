@@ -48,9 +48,9 @@ async def draw_frame(dut):
     pixels = image.load()
 
     while (1):
+        # double clock frequency
         await RisingEdge(dut.clk)
-        await RisingEdge(dut.clk) # TODO
-    
+        await RisingEdge(dut.clk)
 
         # Expand color data
         r = int(dut.rrggbb.value[0:1]) << 6
@@ -104,7 +104,7 @@ async def test_project(dut):
 
     # Reset
     dut.ena.value = 1
-    dut.ui_in.value = 0
+    dut.ui_in.value = 0xF8
     dut.uio_in.value = 0
     dut.rst_n.value = 0
     

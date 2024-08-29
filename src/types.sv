@@ -32,12 +32,16 @@ package types;
         trick: let attributes depend on subcounter_h[0] -> different attributes for small/large
     */
     
-    typedef enum logic[1:0] {
+    typedef enum logic[2:0] {
         BG_UNDEFINED='x,
-        BG_COLOR0=0,
-        BG_COLOR1,
-        BG_STRIPES,
-        BG_SPECIAL
+        BG_BLACK=0,
+        BG_WHITE,
+        BG_GREEN,
+        BG_DSTRIPES,
+        BG_HSTRIPES,
+        BG_XOR,
+        BG_FRAME,
+        BG_TODO
     } fill_type_t;
     
     typedef enum logic[1:0] {
@@ -54,10 +58,12 @@ package types;
         A_BOUNCE
     } animation_t;
 
-    typedef enum logic[0:0] {
+    typedef enum logic[1:0] {
         S_UNDEFINED='x,
-        S_NORMAL=0,
-        S_SMALL
+        S_NONE=0,
+        S_NORMAL,
+        S_SMALL,
+        S_BOTH
     } size_t;
 
 

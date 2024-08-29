@@ -32,6 +32,9 @@ module tt_um_tt08_wirecube (
     ) wirecube_top_inst (
         .clk_i      (clk),
         .rst_ni     (rst_n_sync),
+        
+        // Input PMOD
+        .ui_in      (ui_in),
 
         // VGA signals
         .rrggbb_o         (rrggbb),
@@ -73,18 +76,5 @@ module tt_um_tt08_wirecube (
     assign uio_out[5] = 1'b0; assign uio_oe[5] = 1'b0;
     assign uio_out[6] = 1'b0; assign uio_oe[6] = 1'b0;
     assign uio_out[7] = 1'b0; assign uio_oe[7] = 1'b0;
-
-    // Input PMOD
-    
-    /*
-    ui_in[0]
-    ui_in[1]
-    ui_in[2]
-    ui_in[3]
-    ui_in[4]
-    ui_in[5]
-    ui_in[6]
-    ui_in[7]
-    */
 
 endmodule
