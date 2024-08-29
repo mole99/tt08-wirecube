@@ -672,7 +672,7 @@ module wirecube_top (
     logic [5:0] color_horizontal;
     logic [5:0] color_xor;
     
-    always_comb begin
+    /*always_comb begin
         case (pixel_y[1:0] + cur_frame[1:0])
             2'd0: color_rainbow = COLOR_1;
             2'd1: color_rainbow = COLOR_2;
@@ -680,7 +680,7 @@ module wirecube_top (
             2'd3: color_rainbow = COLOR_4;
             default: color_rainbow = 'x;
         endcase
-    end
+    end*/
     
     assign color_xor = (pixel_x ^ pixel_y) + frame_cnt[7:2];
     
@@ -689,6 +689,8 @@ module wirecube_top (
     
     logic [11:0] counter_horizontal;
     assign counter_horizontal = counter_v + {4'd0, frame_cnt};
+
+    assign color_rainbow = counter_horizontal;
 
     always_comb begin
         case (counter_diagonal[7:6])
