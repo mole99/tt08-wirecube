@@ -37,6 +37,13 @@ jobs:
       - name: GL test
         uses: TinyTapeout/tt-gds-action/gl_test@tt08
 
+      - name: upload image
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gl-image
+          path: |
+            test/*.png
   viewer:
     needs: gds
     runs-on: ubuntu-latest
