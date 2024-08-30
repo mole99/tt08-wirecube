@@ -17,20 +17,6 @@ package types;
         logic [LINE_BITS-1:0] x1;
         logic [LINE_BITS-1:0] y1;
     } line_t;
-
-    /*
-        TODO attributes
-    
-        animation speed divider
-        small, large, both, none (same colors+types?)
-        thick
-        foreground color -> slots?
-        background color
-        foreground type -> solid, stripes, xor
-        backgrund type -> solid, stripes, xor
-        
-        trick: let attributes depend on subcounter_h[0] -> different attributes for small/large
-    */
     
     typedef enum logic[2:0] {
         BG_UNDEFINED='x,

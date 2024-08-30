@@ -78,16 +78,6 @@ module wirecube_top (
     logic next_frame;
 
     logic next_horizontal;
-    //assign next_horizontal = 1'b1;
-
-    // Half the frequency for VGA
-    /*always_ff @(posedge clk_i, negedge rst_ni) begin
-        if (!rst_ni) begin
-            next_horizontal <= 1'b0;
-        end else begin
-            next_horizontal <= !next_horizontal;
-        end
-    end*/
 
     // Horizontal timing, doubled for double the frequency
     timing #(
@@ -129,7 +119,6 @@ module wirecube_top (
     
     
     // Frame counter for animations
-    
     logic [15:0] frame_cnt;
     
     always_ff @(posedge clk_i, negedge rst_ni) begin
@@ -203,8 +192,7 @@ module wirecube_top (
         end
     end
 
-
-    // TODO attributes
+    // attributes
     types::fill_type_t background_fill;
     types::fill_type_t cube_fill;
     types::animation_speed_t animation_speed;
@@ -310,6 +298,7 @@ module wirecube_top (
     assign cur_state_cube = frame_cnt[11:8];
     assign cur_state_background = frame_cnt[11:8];
     
+    // This is necessary to make iverilog happy
     types::size_t size_small_normal;
     
     always_comb begin
@@ -319,16 +308,6 @@ module wirecube_top (
             size_small_normal = types::S_NORMAL;
         end
     end
-    
-    //assign size_small_normal = frame_cnt[0] ^ counter_v[0] ? types::S_SMALL : types::S_NORMAL;
-    
-    /*types::size_t size_memory [64];
-    
-    initial begin
-        $readmemh("size_memory.hex", size_memory);
-    end
-    
-    assign size = size_memory[frame_cnt[11:6]];*/
     
     // Size
     // ~2min -> 1 step ~1s
@@ -466,16 +445,13 @@ module wirecube_top (
         endcase
     end
 
+    // This is necessary to make iverilog happy
     types::animation_speed_t as_norm_stop;
     types::animation_speed_t as_fast_stop;
     types::animation_speed_t as_fast_slow;
     types::animation_speed_t as_fast_norm;
     types::animation_speed_t as_slow_fast;
     types::animation_speed_t as_slow_norm;
-    
-    //assign as_norm_stop = frame_cnt[0] ^ counter_v[0] ? types::AS_NORM : types::AS_STOP;
-    //assign as_fast_stop = frame_cnt[0] ^ counter_v[0] ? types::AS_FAST : types::AS_STOP;
-    //assign as_fast_slow = frame_cnt[0] ^ counter_v[0] ? types::AS_FAST : types::AS_SLOW;
 
     always_comb begin
         if (frame_cnt[0] ^ counter_v[0]) begin
@@ -661,9 +637,6 @@ module wirecube_top (
         endcase
     end
     
-    logic [5:0] color0;
-    logic [5:0] color1;
-    
     logic [5:0] background_color;
     logic [5:0] cube_color, cube_color2;
     
@@ -671,16 +644,6 @@ module wirecube_top (
     logic [5:0] color_diagonal;
     logic [5:0] color_horizontal;
     logic [5:0] color_xor;
-    
-    /*always_comb begin
-        case (pixel_y[1:0] + cur_frame[1:0])
-            2'd0: color_rainbow = COLOR_1;
-            2'd1: color_rainbow = COLOR_2;
-            2'd2: color_rainbow = COLOR_3;
-            2'd3: color_rainbow = COLOR_4;
-            default: color_rainbow = 'x;
-        endcase
-    end*/
     
     assign color_xor = (pixel_x ^ pixel_y) + frame_cnt[7:2];
     
@@ -743,6 +706,7 @@ module wirecube_top (
     
     assign cube_color2 = COLOR_BLACK;
 
+    // This is necessary to make iverilog happy
     types::fill_type_t bg_frame_xor;
     types::fill_type_t bg_diagonal_horizontal;
     types::fill_type_t bg_xor_frame;
@@ -852,18 +816,18 @@ module wirecube_top (
         end
     end
 
-    // background fill
+    // background and cube fill
     // ~2min -> 1 step ~1s
     always_comb begin
         case (frame_cnt[12:6])
             'd0:  begin background_fill = types::BG_BLACK; cube_fill = types::BG_BLACK; end
             'd1:  begin background_fill = types::BG_BLACK; cube_fill = types::BG_BLACK; end
             'd2:  begin background_fill = types::BG_BLACK; cube_fill = types::BG_BLACK; end
-            'd3:  begin background_fill = types::BG_BLACK; cube_fill = types::BG_BLACK; end // --- show cube
+            'd3:  begin background_fill = types::BG_BLACK; cube_fill = types::BG_BLACK; end
             'd4:  begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd5:  begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd6:  begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
-            'd7:  begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end // --- start rotation, faster
+            'd7:  begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd8:  begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd9:  begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd10: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
@@ -875,31 +839,31 @@ module wirecube_top (
             'd16: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd17: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd18: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end 
-            'd19: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end // --- change cube color
+            'd19: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd20: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end 
             'd21: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd22: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
-            'd23: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end // --- change background color
+            'd23: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd24: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd25: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd26: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
-            'd27: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end // --- hide
+            'd27: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd28: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd29: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end 
             'd30: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
-            'd31: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end // --- show small cube, stop
+            'd31: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd32: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd33: begin background_fill = types::BG_BLACK; cube_fill = types::BG_BLACK; end
             'd34: begin background_fill = types::BG_BLACK; cube_fill = types::BG_BLACK; end
-            'd35: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end // --- rotate small cube slow
+            'd35: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end
             'd36: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end
             'd37: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end
             'd38: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end
-            'd39: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end // --- show both cubes, large is stop
+            'd39: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end
             'd40: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end
             'd41: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end
             'd42: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end
-            'd43: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end // --- rotate large cube
+            'd43: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end
             'd44: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end
             'd45: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end
             'd46: begin background_fill = types::BG_WHITE; cube_fill = types::BG_WHITE; end
@@ -909,7 +873,7 @@ module wirecube_top (
             'd50: begin background_fill = types::BG_BLACK; cube_fill = types::BG_BLACK; end
             'd51: begin background_fill = types::BG_BLACK; cube_fill = types::BG_BLACK; end
             'd52: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
-            'd53: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end // - colors
+            'd53: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd54: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd55: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd56: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
@@ -919,7 +883,7 @@ module wirecube_top (
             'd60: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd61: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd62: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
-            'd63: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end // --- end
+            'd63: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd64: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd65: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
             'd66: begin background_fill = types::BG_BLACK; cube_fill = types::BG_WHITE; end
@@ -988,13 +952,14 @@ module wirecube_top (
         endcase
     end
 
+    // Final color mixing
     always_ff @(posedge clk_i, negedge rst_ni) begin
         if (!rst_ni) begin
             rgb_d <= 'x;
         end else begin
             rgb_d <= final_pixel ? cube_color : final_pixel2 ? cube_color2: background_color;
             
-            // Blanking intervall
+            // Blanking interval
             if (hblank || vblank) begin
                 rgb_d <= '0;
             end
@@ -1043,14 +1008,5 @@ module wirecube_top (
         .in_i   (next_frame),
         .out_o  (next_frame_o)
     );
-    
-    /*
-    always_ff @(posedge clk_i) begin
-        hsync_o         <= hsync;
-        vsync_o         <= vsync;
-        next_vertical_o <= next_vertical;
-        next_frame_o    <= next_frame;
-    end
-    */
 
 endmodule
